@@ -1,0 +1,39 @@
+.{{PROJECT_NAME_FOR_CSS_CLASS}}-header {
+  position: relative;
+  &__logo-container {
+    text-align: center;
+  }
+  &__container-navbar {
+    width: 100%;
+    padding: 0;
+    position: absolute;
+    top: 100%;
+    z-index: 2;
+    .navbar-collapse {
+      padding: 10px 30px;
+      padding-bottom: 35px;
+      &.show {
+        box-shadow: $box-shadow-sm;
+      }
+    }
+  }
+  .navbar-toggler {
+    border: 1px solid $white;
+    &:active,
+    &:focus {
+      outline: none !important;
+    }
+  }
+  &__icon-menu-mobile {
+    font-size: 30px;
+    color: $white;
+  }
+
+  @include media-breakpoint-down(md) {
+    padding: 15px 0;
+  }
+
+  @include media-breakpoint-up(lg) {
+    padding-top: 100px;
+  }
+}

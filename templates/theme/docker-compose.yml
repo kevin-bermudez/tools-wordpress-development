@@ -1,0 +1,62 @@
+version: '3'
+
+services:
+  {{DB_SERVICE_NAME}}:
+    container_name: {{DB_CONTAINER_NAME}}
+    image: mariadb:10.4
+    volumes:
+      - ../data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE={{DB_NAME}}
+      - MYSQL_USER={{DB_USER}}
+      - MYSQL_PASSWORD=root
+    ports:
+      - '{{DB_PORT}}:3306'
+    networks:
+      - {{NETWORK_NAME}}
+  {{WEB_SERVICE_NAME}}:
+    container_name: {{WEB_CONTAINER_NAME}}
+    image: wordpress:{{WORDPRESS_VERSION}}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    depends_on:
+      - {{DB_SERVICE_NAME}}
+    volumes:
+      - ../wordpress-full:/var/www/html
+      - ./:/var/www/html/wp-content/themes/{{PROJECT_NAME_FOR_CSS_CLASS}}
+      - ./wordpress.ini:/usr/local/etc/php/conf.d/wordpress.ini
+    environment:
+      - WORDPRESS_DB_USER=root
+      - WORDPRESS_DB_PASSWORD=root
+      - WORDPRESS_DB_HOST={{DB_SERVICE_NAME}}
+      - WORDPRESS_DB_NAME={{DB_NAME}}
+      - WORDPRESS_DEBUG=true
+    ports:
+      - {{WEB_PORT}}:80
+    networks:
+      - {{NETWORK_NAME}}
+  wp_cli_{{SUFFIX_NAMES}}:
+    container_name: wp_cli_container_{{SUFFIX_NAMES}}
+    image: wordpress:cli
+    entrypoint: wp core install --url=http://localhost:{{WEB_PORT}} --title="{{WEB_TITLE}}" --admin_user=dev --admin_email=kevinbermudezmejia@gmail.com --admin_password="{{ADMIN_PASSWORD}}"
+    depends_on:
+      {{WEB_SERVICE_NAME}}:
+        condition: service_healthy
+    volumes:
+      - ../wordpress-full:/var/www/html
+    environment:
+      - WORDPRESS_DB_USER=root
+      - WORDPRESS_DB_PASSWORD=root
+      - WORDPRESS_DB_HOST={{DB_SERVICE_NAME}}
+      - WORDPRESS_DB_NAME={{DB_NAME}}
+      - WORDPRESS_DEBUG=true
+    networks:
+      - {{NETWORK_NAME}}
+
+networks:
+  {{NETWORK_NAME}}:
+    driver: bridge

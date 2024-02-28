@@ -1,0 +1,18 @@
+{
+  "name": "{{PROJECT_NAME_FOR_CSS_CLASS}}-theme-wordpress",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "sass:watch": "node-sass sass/ -watch --output-style compressed -x -o ./css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "{{REPO_URL}}"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "node-sass": "^8.0.0"
+  }
+}

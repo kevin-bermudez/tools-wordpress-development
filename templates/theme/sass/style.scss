@@ -1,0 +1,44 @@
+//fonts: google fonts
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap");
+
+//bootstrap generals
+@import "./libs/bootstrap/functions", "./libs/bootstrap/variables", "./libs/bootstrap/mixins", "./libs/bootstrap/transitions";
+
+//bootstrap reboot
+@import "libs/bootstrap/reboot";
+
+//bootstrap grid
+@import "libs/bootstrap/grid", "libs/bootstrap/utilities/display", "libs/bootstrap/utilities/flex", "libs/bootstrap/utilities/spacing";
+
+//bootstrap utilities
+@import "libs/bootstrap/utilities/text", "libs/bootstrap/utilities/shadows", "libs/bootstrap/utilities/align",
+  "libs/bootstrap/utilities/embed", "libs/bootstrap/images";
+
+//bootstrap dropdown
+@import "libs/bootstrap/dropdown";
+
+//bootstrap navbar
+@import "libs/bootstrap/navbar";
+
+//slick
+@import "./libs/slick";
+
+@import "./variables";
+@import "./mixins";
+
+@import "./libs/animate/animate";
+
+@import "./generals";
+
+//components
+@import "./partials/components/header";
+@import "./partials/components/footer";
+
+//pages
+@import "./partials/pages/home";
+@import "./partials/pages/about";
+@import "./partials/pages/services";
+@import "./partials/pages/cosmetics";
+@import "./partials/pages/contact";
+
+@import "./partials/icons";

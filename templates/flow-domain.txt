@@ -1,0 +1,20 @@
+import { flowResponseBuilder } from '@flows/helpers/flow-response-builder.helper';
+
+import { constants } from '@commonConfig';
+
+const {
+  flows: { {{flowNameSnakeCase}} },
+  // actions: { GP_COMERCIO_MISMO_CUIT, SONQO_ACQUIRER },
+} = constants.providersBff;
+
+export const {{flowNameCamelCase}} = async (flow, meta) => {
+  const actionsAnswer = {};
+  const requestId = flow._request_id;
+  const flowName = {{flowNameSnakeCase}}.name;
+
+  try {
+    return flowResponseBuilder(flowName, actionsAnswer);
+  } catch (error) {
+    return flowResponseBuilder(flowName, error);
+  }
+};
