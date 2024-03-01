@@ -22,3 +22,7 @@ module.exports.createNewFile = (template, newFile, variables = {}) => {
 module.exports.copyFile = (template, newFile) => {
   fs.cpSync(path.resolve(templatesPath, template), newFile);
 }
+
+module.exports.copyFolder = (origin, destination) => {
+  fs.cpSync(origin, destination, {recursive: true});
+}

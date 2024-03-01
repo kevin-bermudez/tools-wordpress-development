@@ -7,22 +7,14 @@ const passwordGenerator = require('generate-password');
 
 const defaultProjectsPath = process.env.DEFAULT_PROJECTS_PATH;
 
-const { folderSelector, selector } = require('./utils/selectors');
-const { toSnakeCase, toHyppenCase, toCamelCase } = require('./utils/to-cases');
+const { toSnakeCase, toHyppenCase } = require('./utils/to-cases');
 const {
-  getParsedTemplate,
   createNewFile,
-  copyFile
+  copyFolder
 } = require('./utils/manage-templates');
 const { executeInConsole } = require('./utils/execute-in-console');
-// const { getJsonFromYaml } = require('tools/utils/get-json-from-yaml');
-const appDir = path.resolve(__dirname, '../../src');
-const rootDir = path.resolve(__dirname, '../..');
+const { delay } = require('./utils/wait');
 
-const FlowTypesList = Object.freeze({
-  CREATE: 'create',
-  UPDATE: 'update'
-});
 
 const createFolderProject = (path) => {
   try {
@@ -89,13 +81,130 @@ const duplicateFiles = (info,path,data,pathRoot) => {
   }
 }
 
-const copyWordpressInit = (pathNewProject) => {
+const wpIsInstalled = async (port, themeName,) => {
   try {
-    copyFile('wordpress.ini',`${pathNewProject}/wordpress.ini`,)
+    const response = await fetch(`http://localhost:${port}/wp-content/themes/${themeName}/test-installed.php`);
+    const body = await response.text()
+    return body === 'true';
   }
   catch (error) {
-    console.error('Falló copiando wordpress.ini', error);
-    throw new Error('Falló copiando wordpress.ini');
+    return false
+  }
+} 
+  
+const activateTheme = async (cliServiceName,themeName,pathNewProject) => {
+  try { 
+    const activatingTheme = await executeInConsole(
+      `cd ${pathNewProject} && docker-compose run ${cliServiceName} wp theme activate ${themeName}`
+    );
+    console.log('SALIDA ACTIVANDO EL TEMA', themeName);
+    console.log(activatingTheme);
+  }
+  catch (error) {
+    console.error('Falló activando el tema', error);
+    throw new Error('Falló activando el tema');
+  }
+}
+
+const installPlugin = async (plugin,pathNewProject,cliServiceName) => {
+  try { 
+    const installingPlugin = await executeInConsole(
+      `cd ${pathNewProject} && docker-compose run ${cliServiceName} wp plugin install ${plugin}`
+    );
+    console.log('SALIDA INSTALANDO EL PLUGIN', plugin);
+    console.log(installingPlugin);
+  }
+  catch (error) {
+    console.error('Falló instalando el plugin', error);
+    throw new Error('Falló instalando el plugin');
+  }
+}
+
+const activatePlugin = async (plugin,pathNewProject,cliServiceName) => {
+  try { 
+    const installingPlugin = await executeInConsole(
+      `cd ${pathNewProject} && docker-compose run ${cliServiceName} wp plugin activate ${plugin}`
+    );
+    console.log('SALIDA ACTIVANDO EL PLUGIN', plugin);
+    console.log(installingPlugin);
+  }
+  catch (error) {
+    console.error('Falló activando el plugin', error);
+    throw new Error('Falló activando el plugin');
+  }
+}
+
+const uninstallPlugin = async (plugin,pathNewProject,cliServiceName) => {
+  try { 
+    const installingPlugin = await executeInConsole(
+      `cd ${pathNewProject} && docker-compose run ${cliServiceName} wp plugin uninstall ${plugin}`
+    );
+    console.log('SALIDA DESINSTALANDO EL PLUGIN', plugin);
+    console.log(installingPlugin);
+  }
+  catch (error) {
+    console.error('Falló desinstalando el plugin', error);
+    throw new Error('Falló desinstalando el plugin');
+  }
+}
+
+const deactivatePlugin = async (plugin,pathNewProject,cliServiceName) => {
+  try { 
+    const installingPlugin = await executeInConsole(
+      `cd ${pathNewProject} && docker-compose run ${cliServiceName} wp plugin deactivate ${plugin}`
+    );
+    console.log('SALIDA DESACTIVANDO EL PLUGIN', plugin);
+    console.log(installingPlugin);
+  }
+  catch (error) {
+    console.error('Falló desactivando el plugin', error);
+    throw new Error('Falló desactivando el plugin');
+  }
+}
+
+const deletePlugin = async (plugin,pathNewProject,cliServiceName) => {
+  try { 
+    const installingPlugin = await executeInConsole(
+      `cd ${pathNewProject} && docker-compose run ${cliServiceName} wp plugin delete ${plugin}`
+    );
+    console.log('SALIDA ELIMINANDO EL PLUGIN', plugin);
+    console.log(installingPlugin);
+  }
+  catch (error) {
+    console.error('Falló eliminando el plugin', error);
+    throw new Error('Falló eliminando el plugin');
+  }
+}
+
+const copyPreinstalledPlugins = (projectPath) => {
+  try {
+    copyFolder(path.resolve(__dirname, 'templates/plugins'),path.resolve(projectPath, 'plugins'));
+  }
+  catch (error) {
+    console.error('Falló copiando los plugins preinstalados', error);
+    throw new Error('Falló copiando los plugins preinstalados');
+  }
+}
+
+const deleteInaciveThemes = async (pathNewProject,cliServiceName) => {
+  try { 
+    const inaciveThemesList = await executeInConsole(`cd ${pathNewProject} && docker-compose run ${cliServiceName} wp theme list --status=inactive --field=name`);
+    const themes = inaciveThemesList.trim().split('\n');
+    let result = '';
+
+    for (let theme of themes) {
+      result += await executeInConsole(
+        `cd ${pathNewProject} && docker-compose run ${cliServiceName} wp theme delete ${theme}`
+      );
+    }
+    
+    
+    console.log('SALIDA ELIMINANDO TEMAS INACTIVOS', result);
+    console.log(result);
+  }
+  catch (error) {
+    console.error('Falló eliminando temas inactivos', error);
+    throw new Error('Falló eliminando temas inactivos');
   }
 }
 
@@ -130,9 +239,9 @@ const main = async () => {
   
   const dbServiceName = `${projectSnakeCase}_db_${currentTime}`;
   const dbContainerName = `${projectSnakeCase}_db_cont_${currentTime}`;
-
-  const toolboxServiceName = `${projectSnakeCase}_toolbox_wp_${currentTime}`;
-  const toolboxContainerName= `${projectSnakeCase}_toolbox_wp_${currentTime}`;
+  
+  const cliServiceName = `${projectSnakeCase}_wpcli_${currentTime}`;
+  const cliContainerName = `${projectSnakeCase}_wpcli_cont_${currentTime}`;
 
   const dbName = `${projectSnakeCase}_${currentTime}`;
   const dbUser = `${projectSnakeCase}_${currentTime}`;
@@ -141,8 +250,8 @@ const main = async () => {
 
   const repoUrl = await doQuestion('Url del repositorio:', true, 'a');
   const wordpressVersion = await doQuestion('Versión de wordpress:', true, '6.4');
-  
-  const webTitle = await doQuestion('Título de la web', true);
+
+  const webTitle = await doQuestion('Título de la web', true,'Probando Ando');
   const adminPassword = passwordGenerator.generate({
     length: 8,
     numbers: true
@@ -164,20 +273,21 @@ const main = async () => {
         NETWORK_NAME: networkName,
         WEB_SERVICE_NAME: webServiceName,
         WEB_CONTAINER_NAME: webContainerName,
+        CLI_SERVICE_NAME: cliServiceName,
+        CLI_CONTAINER_NAME: cliContainerName,
         WEB_PORT: webPort,
         THEME_NAME: folderName,
         PROJECT_NAME_FOR_CSS_CLASS: folderName,
         PROJECT_NAME: projectName,
         REPO_URL: repoUrl,
         WORDPRESS_VERSION: wordpressVersion,
-        TOOLBOX_SERVICE_NAME: toolboxServiceName,
-        TOOLBOX_CONTAINER_NAME: toolboxContainerName,
         SUFFIX_NAMES: currentTime,
         ADMIN_PASSWORD: adminPassword,
         WEB_TITLE: webTitle
       },
       pathNewProject
     );
+    copyPreinstalledPlugins(pathNewProjectRoot);
   }
 
   console.log('Levantando containers de Docker...')
@@ -186,8 +296,47 @@ const main = async () => {
   );
   console.log('run docker is', runDocker);
 
+  let control = true;
+  console.log('Comprobando instalación de wordpress...');
+  while (control) {
+    const wordpressInstalled = await wpIsInstalled(webPort,folderName);
+    if (wordpressInstalled) {
+      control = false;
+      continue;
+    }
 
+    console.log('Wordpress no instalado...',new Date().getTime());
+    await delay(2)
+  }
   
+  console.log('WORDPRESS INSTALADO CON ÉXITO');
+  console.log()
+  console.log('ACTIVANDO TEMA')
+  await activateTheme(cliServiceName, folderName, pathNewProject);
+
+  console.log()
+  console.log('INSTALANDO PLUGINS')
+  //install duplicator
+  await installPlugin('duplicator', pathNewProject, cliServiceName);
+
+  // await installPlugin(`/var/www/html/wp-content/themes/${folderName}/plugins-pro/advanced-custom-fields-pro.zip`, pathNewProject, cliServiceName);
+
+  console.log()
+  console.log('ACTIVANDO PLUGINS')
+  await activatePlugin('duplicator advanced-custom-fields-pro', pathNewProject, cliServiceName);
+
+  console.log()
+  console.log('DESACTIVANDO PLUGINS')
+  await deactivatePlugin('akismet hello', pathNewProject, cliServiceName);
+
+  console.log()
+  console.log('DESINSTALANDO PLUGINS')
+  await uninstallPlugin('akismet hello', pathNewProject, cliServiceName);
+
+  console.log()
+  console.log('ELIMINANDO THEMES INACTIVOS')
+  await deleteInaciveThemes(pathNewProject, cliServiceName);
+
   return true;
 };
 
@@ -200,10 +349,3 @@ main()
     console.error('Error executing process', error);
     process.exit();
   });
-
-/*
-  PASOS PARA CREAR UN FLUJO
-  
-  1. Crear domain, handler en la carpeta src/flows/{nameFolder}/domain src/flows/{nameFolder}/handler
-  2. Modificar el archivo: src/flows/{nameFolder}/index.yml y agregar el flujo
-*/
