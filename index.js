@@ -208,6 +208,46 @@ const deleteInaciveThemes = async (pathNewProject,cliServiceName) => {
   }
 }
 
+const setInitialConfigRepo = async (pathNewProject) => {
+  try { 
+    let ouput = await executeInConsole(`cd ${pathNewProject} && git init`);
+    console.log('SALIDA PARA GIT INIT')
+    console.log(ouput)
+
+    ouput = await executeInConsole(`cd ${pathNewProject} && git config user.email "kevinbermudezmejia@gmail.com"`);
+    console.log('SALIDA PARA GIT CONFIG EMAIL')
+    console.log(ouput)
+
+    ouput = await executeInConsole(`cd ${pathNewProject} && git config user.name "kevin-bermudez"`);
+    console.log('SALIDA PARA GIT CONFIG NAME')
+    console.log(ouput)
+  }
+  catch (error) {
+    console.error('Falló git init, git config', error);
+    throw new Error('Falló git init, git config');
+  }
+}
+
+const setBranchAndFirstCommitRepo = async (pathNewProject,repoUrl) => {
+  try { 
+    let ouput = await executeInConsole(`cd ${pathNewProject} && git remote add origin ${repoUrl}`);
+    console.log('SALIDA PARA GIT REMOTE')
+    console.log(ouput)
+
+    ouput = await executeInConsole(`cd ${pathNewProject} && git add . && git commit -m "chore: initial commit" && git push -f origin master`);
+    console.log('SALIDA PARA GIT COMMIT')
+    console.log(ouput)
+
+    ouput = await executeInConsole(`cd ${pathNewProject} && git push -f origin master`);
+    console.log('SALIDA PARA GIT PUSH')
+    console.log(ouput)
+  }
+  catch (error) {
+    console.error('Falló git remote, git commit, git push', error);
+    throw new Error('Falló git remote, git commit, git push');
+  }
+}
+
 const main = async () => {
   console.log('Información para el nuevo proyecto');
 
@@ -248,7 +288,7 @@ const main = async () => {
 
   const networkName = `${projectSnakeCase}_network_${currentTime}`;
 
-  const repoUrl = await doQuestion('Url del repositorio:', true, 'a');
+  const repoUrl = await doQuestion('Url del repositorio:', true, 'git@kevin-bitbucket:wordpress-free/theme-wordpress-prueba.git');
   const wordpressVersion = await doQuestion('Versión de wordpress:', true, '6.4');
 
   const webTitle = await doQuestion('Título de la web', true,'Probando Ando');
@@ -336,6 +376,13 @@ const main = async () => {
   console.log()
   console.log('ELIMINANDO THEMES INACTIVOS')
   await deleteInaciveThemes(pathNewProject, cliServiceName);
+
+  if (process.env.SKIP_CONFIG_REPO !== 'true') {
+    console.log()
+    console.log('CONFIGURANDO EL REPO')
+    await setInitialConfigRepo(pathNewProject);
+    await setBranchAndFirstCommitRepo(pathNewProject, repoUrl);
+  }
 
   return true;
 };
