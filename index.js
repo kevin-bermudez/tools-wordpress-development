@@ -288,7 +288,11 @@ const main = async () => {
 
   const networkName = `${projectSnakeCase}_network_${currentTime}`;
 
-  const repoUrl = await doQuestion('Url del repositorio:', true, 'git@kevin-bitbucket:wordpress-free/theme-wordpress-prueba.git');
+  let repoUrl = '';
+  if (process.env.SKIP_CONFIG_REPO !== 'true') {
+    repoUrl = await doQuestion('Url del repositorio:', true, 'git@kevin-bitbucket:wordpress-free/theme-wordpress-prueba.git');
+  }
+
   const wordpressVersion = await doQuestion('Versión de wordpress:', true, '6.4');
 
   const webTitle = await doQuestion('Título de la web', true,'Probando Ando');
