@@ -1,4 +1,4 @@
-var Main{{projecNamePascalCase}} = (function (window, jQuery, undefined) {
+var Main{{PROJECT_NAME_PASCAL_CASE}} = (function (window, jQuery, undefined) {
   var leftArrowSlide = function () {
     return '<div class="arrow-left-slick"><i class="icon-arrow-left"></i></div>';
   };
@@ -32,5 +32,5 @@ var Main{{projecNamePascalCase}} = (function (window, jQuery, undefined) {
 })(window, jQuery, undefined);
 
 jQuery(document).ready(function () {
-  Main{{projecNamePascalCase}}.init();
+  Main{{PROJECT_NAME_PASCAL_CASE}}.init();
 });

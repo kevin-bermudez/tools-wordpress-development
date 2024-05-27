@@ -16,3 +16,5 @@ module.exports.toCamelCase = (str) =>
       return index == 0 ? word.toLowerCase() : word.toUpperCase();
     })
     .replace(/\s+/g, '');
+
+module.exports.toPascalCase = str => (str.match(/[a-zA-Z0-9]+/g) || []).map(w => `${w.charAt(0).toUpperCase()}${w.slice(1)}`).join('');

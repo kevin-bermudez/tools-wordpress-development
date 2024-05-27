@@ -7,7 +7,7 @@ const passwordGenerator = require('generate-password');
 
 const defaultProjectsPath = process.env.DEFAULT_PROJECTS_PATH;
 
-const { toSnakeCase, toHyppenCase } = require('./utils/to-cases');
+const { toSnakeCase, toHyppenCase, toPascalCase } = require('./utils/to-cases');
 const {
   createNewFile,
   copyFolder
@@ -103,6 +103,28 @@ const activateTheme = async (cliServiceName,themeName,pathNewProject) => {
   catch (error) {
     console.error('Falló activando el tema', error);
     throw new Error('Falló activando el tema');
+  }
+}
+
+const changeLanguage = async(cliServiceName,pathNewProject,newLanguage = 'es_ES') => {
+  try { 
+    const installingTheme = await executeInConsole(
+      `cd ${pathNewProject} && docker-compose run ${cliServiceName} wp language core install ${newLanguage}`
+    )
+    const activatingTheme = await executeInConsole(
+      `cd ${pathNewProject} && docker-compose run ${cliServiceName} wp site switch-language ${newLanguage}`
+    );
+
+    console.log();
+    console.log('SALIDA INSTALANDO EL IDIOMA', newLanguage);
+    console.log(installingTheme);
+
+    console.log('SALIDA CAMBIANDO EL IDIOMA', newLanguage);
+    console.log(activatingTheme);
+  }
+  catch (error) {
+    console.error('Falló cambiando el idioma', error);
+    throw new Error('Falló cambiando el idioma');
   }
 }
 
@@ -228,6 +250,18 @@ const setInitialConfigRepo = async (pathNewProject) => {
   }
 }
 
+const npmI = async(pathNewProject) => {
+  try{
+    const output = await executeInConsole(`cd ${pathNewProject} && . $NVM_DIR/nvm.sh use && npm i`);
+    console.log('SALIDA PARA npm i');
+    console.log(output);
+  }
+  catch(error){
+    console.error('Falló npm i', error);
+    throw new Error('Falló npm i');
+  }
+}
+
 const setBranchAndFirstCommitRepo = async (pathNewProject,repoUrl) => {
   try { 
     let ouput = await executeInConsole(`cd ${pathNewProject} && git remote add origin ${repoUrl}`);
@@ -253,6 +287,7 @@ const main = async () => {
 
   console.log()
   const projectName = await doQuestion('Nombre del proyecto:', true,'prueba');
+  const projecNamePascalCase = toPascalCase(projectName);
   const folderName = toHyppenCase(projectName);
   const projectSnakeCase = toSnakeCase(projectName);
   const pathNewProjectRoot = `${defaultProjectsPath}/${folderName}`
@@ -270,8 +305,8 @@ const main = async () => {
     })
   });
 
-  const webPort = await doQuestion('Puerto web:', true,8103);
-  const dbPort = await doQuestion('Puerto db:', true,3324);
+  const webPort = await doQuestion('Puerto web:', true,8114);
+  const dbPort = await doQuestion('Puerto db:', true,3330);
   const currentTime = new Date().getTime();
   
   const webServiceName = `${projectSnakeCase}_web_${currentTime}`;
@@ -323,11 +358,12 @@ const main = async () => {
         THEME_NAME: folderName,
         PROJECT_NAME_FOR_CSS_CLASS: folderName,
         PROJECT_NAME: projectName,
+        PROJECT_NAME_PASCAL_CASE:projecNamePascalCase,
         REPO_URL: repoUrl,
         WORDPRESS_VERSION: wordpressVersion,
         SUFFIX_NAMES: currentTime,
         ADMIN_PASSWORD: adminPassword,
-        WEB_TITLE: webTitle
+        WEB_TITLE: webTitle,
       },
       pathNewProject
     );
@@ -353,7 +389,13 @@ const main = async () => {
     await delay(2)
   }
   
+  console.log()
   console.log('WORDPRESS INSTALADO CON ÉXITO');
+
+  console.log();
+  console.log('CAMBIANDO A IDIOMA ESPAÑOL');
+  await changeLanguage(cliServiceName,pathNewProject);
+
   console.log()
   console.log('ACTIVANDO TEMA')
   await activateTheme(cliServiceName, folderName, pathNewProject);
@@ -362,12 +404,13 @@ const main = async () => {
   console.log('INSTALANDO PLUGINS')
   //install duplicator
   await installPlugin('duplicator', pathNewProject, cliServiceName);
+  await installPlugin('form-maker', pathNewProject, cliServiceName);
 
   // await installPlugin(`/var/www/html/wp-content/themes/${folderName}/plugins-pro/advanced-custom-fields-pro.zip`, pathNewProject, cliServiceName);
 
   console.log()
   console.log('ACTIVANDO PLUGINS')
-  await activatePlugin('duplicator advanced-custom-fields-pro', pathNewProject, cliServiceName);
+  await activatePlugin('duplicator advanced-custom-fields-pro form-maker', pathNewProject, cliServiceName);
 
   console.log()
   console.log('DESACTIVANDO PLUGINS')
@@ -387,6 +430,10 @@ const main = async () => {
     await setInitialConfigRepo(pathNewProject);
     await setBranchAndFirstCommitRepo(pathNewProject, repoUrl);
   }
+
+  console.log();
+  console.log('INSTALANDO DEPEDENCIAS DE NODE');
+  await npmI(pathNewProject);
 
   return true;
 };
