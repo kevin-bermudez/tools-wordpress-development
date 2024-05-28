@@ -32,8 +32,4 @@
   @include media-breakpoint-down(md) {
     padding: 15px 0;
   }
-
-  @include media-breakpoint-up(lg) {
-    padding-top: 100px;
-  }
 }
