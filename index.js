@@ -305,8 +305,8 @@ const main = async () => {
     })
   });
 
-  const webPort = await doQuestion('Puerto web:', true,8114);
-  const dbPort = await doQuestion('Puerto db:', true,3330);
+  const webPort = await doQuestion('Puerto web:', true,8209);
+  const dbPort = await doQuestion('Puerto db:', true,8210);
   const currentTime = new Date().getTime();
   
   const webServiceName = `${projectSnakeCase}_web_${currentTime}`;

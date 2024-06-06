@@ -1,0 +1,24 @@
+.blog-pagination {
+  @include ff-plus-jakarta-normal;
+
+  &__menu-container {
+    list-style: none;
+
+    li {
+      a {
+        color: $blue-dark-h;
+      }
+    }
+
+    .active a {
+      color: $green-text;
+    }
+
+    li:not(:last-child) {
+      &:after {
+        content: '|';
+        padding: 0 10px;
+      }
+    }
+  }
+}

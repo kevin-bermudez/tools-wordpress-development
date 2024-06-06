@@ -187,3 +187,152 @@ if(!function_exists('kd_slugify')){
     return $text;
   }
 }
+
+
+if(!function_exists('kd_get_feature_image')){
+  function kd_get_feature_image($postId){
+    $thumbnail_id    = get_post_thumbnail_id( $postId );
+
+    if(!$thumbnail_id){
+      return false;
+    }
+
+    $thumbnail_image = get_posts(array('p' => $thumbnail_id, 'post_type' => 'attachment'));
+    $image = $thumbnail_image[0];
+    $alt = get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true);
+    $url = $image->guid;
+    $title = $image->post_title;
+
+    return [
+      'url' => $url,
+      'title' => $title,
+      'alt' => $alt
+    ];
+  }
+}
+
+if(!function_exists('kd_get_id_youtube_video')){
+  function kd_get_id_youtube_video($url) {
+    $patron = '%^ (?:https?://)? (?:www\.)? (?: youtu\.be/ | youtube\.com (?: /shorts/ | /embed/ | /v/ | /watch\?v= ) ) ([\w-]{10,12}) $%x';
+    $array = preg_match($patron, $url, $parte);
+    if (false !== $array) {
+        return $parte[1];
+    }
+    return false;
+  }
+}
+
+if(!function_exists('kd_get_avatar')){
+  function kd_get_avatar($userId){
+    $avatarData    = get_avatar_data($userId);
+    $userData = get_userdata( $userId );
+
+    if(!$avatarData){
+      return [
+        'url' => false,
+        'alt' => $userData ? 'Imagen de '.$userData->display_name : 'Imagen de un usuario',
+        'title' => $userData ? 'Imagen de '.$userData->display_name : 'Imagen de un usuario'
+      ];
+    }
+
+    return [
+      'url' => $avatarData['url'],
+      'alt' => $userData ? 'Imagen de '.$userData->display_name : 'Imagen de un usuario',
+      'title' => $userData ? 'Imagen de '.$userData->display_name : 'Imagen de un usuario',
+    ];
+  }
+}
+
+if (!function_exists('kd_pagination')) {
+  function kd_pagination($additionalClass = true)
+  {
+    if (is_singular()) {
+      return;
+    }
+
+    global $wp_query;
+
+    /** Stop execution if there's only 1 page */
+    if ($wp_query->max_num_pages <= 1) {
+      return;
+    }
+
+    $paged = get_query_var('paged') ? absint(get_query_var('paged')) : 1;
+    $max = intval($wp_query->max_num_pages);
+
+    /** Add current page to the array */
+    if ($paged >= 1) {
+      $links[] = $paged;
+    }
+
+    /** Add the pages around the current page to the array */
+    if ($paged >= 3) {
+      $links[] = $paged - 1;
+      $links[] = $paged - 2;
+    }
+
+    if ($paged + 2 <= $max) {
+      $links[] = $paged + 2;
+      $links[] = $paged + 1;
+    }
+
+    $classPagination = $additionalClass ? $additionalClass : '';
+
+    echo '<div class="navigation blog-pagination' .
+      $additionalClass .
+      '"><ul class="pagination blog-pagination__menu-container d-flex justify-content-center margin-y">' .
+      "\n";
+
+    /** Previous Post Link */
+    if (get_previous_posts_link()) {
+      printf('<li class="blog-pagination__prev">%s</li>' . "\n", get_previous_posts_link());
+    }
+
+    /** Link to first page, plus ellipses if necessary */
+    if (!in_array(1, $links)) {
+      $class = 1 == $paged ? ' class="page-item active"' : ' class="page-item"';
+
+      printf(
+        '<li%s><a href="%s">%s</a></li>' . "\n",
+        $class,
+        esc_url(get_pagenum_link(1)),
+        '1'
+      );
+
+      if (!in_array(2, $links)) {
+        echo '<li>…</li>';
+      }
+    }
+
+    /** Link to current page, plus 2 pages in either direction if necessary */
+    sort($links);
+    foreach ((array) $links as $link) {
+      $class =
+        $paged == $link ? ' class="page-item active"' : ' class="page-item"';
+      printf(
+        '<li%s><a href="%s">%s</a></li>' . "\n",
+        $class,
+        esc_url(get_pagenum_link($link)),
+        $link
+      );
+    }
+
+    /** Link to last page, plus ellipses if necessary */
+    if (!in_array($max, $links)) {
+      if (!in_array($max - 1, $links)) {
+        echo '<li>…</li>' . "\n";
+      }
+
+      $class =
+        $paged == $max ? ' class="page-item active"' : ' class="page-item"';
+      printf(
+        '<li%s><a href="%s">%s</a></li>' . "\n",
+        $class,
+        esc_url(get_pagenum_link($max)),
+        $max
+      );
+    }
+
+    echo '</ul></div>' . "\n";
+  }
+}

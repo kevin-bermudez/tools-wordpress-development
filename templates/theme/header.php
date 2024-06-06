@@ -1,6 +1,3 @@
-<?php
-  $logo = get_field('logo','option');
-?>
 <!DOCTYPE html>
 <html lang="es-CO">
 
@@ -22,7 +19,7 @@
   <link rel="icon" type="image/png" href="<?php echo get_field('favicon','option') ?>" />
 </head>
 <header class="{{PROJECT_NAME_FOR_CSS_CLASS}}-header">
-  
+  <?php get_template_part('partials/common/logo','',['class' => '{{PROJECT_NAME_FOR_CSS_CLASS}}-header']) ?>
 </header>
 
 <body <?php body_class() ?>>
