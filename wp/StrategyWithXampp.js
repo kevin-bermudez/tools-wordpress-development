@@ -27,7 +27,7 @@ class StrategyWithXampp extends CliStrategy{
 
         console.log('Instalando Wordpress');
         const installWordpress = await executeInConsole(
-            `cd ${this.config.pathNewProject} &&  wp core install --url=http://localhost:${this.config.webPort} --title="${this.config.webTitle}" --admin_user=dev --admin_email=kevinbermudezmejia@gmail.com --admin_password="${this.config.adminPassword}`
+            `cd ${this.config.pathNewProject} &&  wp core install --url=http://localhost/${this.config.folderName} --title="${this.config.webTitle}" --admin_user=dev --admin_email=kevinbermudezmejia@gmail.com --admin_password="${this.config.adminPassword}`
         );
         console.log('Instalación de wordpress is', installWordpress);
 

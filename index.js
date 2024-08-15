@@ -176,8 +176,10 @@ const main = async () => {
 
 
   let webPort,dbPort;
-  webPort = await doQuestion('Puerto web:', true,8209);
-  dbPort = await doQuestion('Puerto db:', true,8210);
+  if(withDocker){
+    webPort = await doQuestion('Puerto web:', true,8209);
+    dbPort = await doQuestion('Puerto db:', true,8210);
+  }
   
   const currentTime = new Date().getTime();
   
