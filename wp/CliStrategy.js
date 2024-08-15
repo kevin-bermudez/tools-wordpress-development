@@ -34,6 +34,18 @@ class CliStrategy {
     async deleteInaciveThemes(){
         return await this.strategy.deleteInaciveThemes()
     }
+
+    async configPagesBlog(){
+        return await this.strategy.configPagesBlog();
+    }
+
+    async deleteExamplePosts(){
+        return await this.strategy.deleteExamplePosts();
+    }
+
+    async setGeneralConfigs(){
+        return await this.strategy.setGeneralConfigs();
+    }
 }
 
 module.exports.CliStrategy = CliStrategy;

@@ -314,6 +314,7 @@ const main = async () => {
   //install 
   await cli.installPlugin( 'duplicator' );
   await cli.installPlugin( 'form-maker' );
+  await cli.installPlugin( 'yoast' );
   // await installPlugin('duplicator', pathNewProject, cliServiceName, withDocker);
   // await installPlugin('form-maker', pathNewProject, cliServiceName, withDocker);
 
@@ -338,6 +339,18 @@ const main = async () => {
   console.log('ELIMINANDO THEMES INACTIVOS')
   await cli.deleteInaciveThemes();
   // await deleteInaciveThemes(pathNewProject, cliServiceName, withDocker);
+
+  console.log()
+  console.log('SETTEANDO PÁGINAS DEL BLOG')
+  await cli.configPagesBlog();
+
+  console.log()
+  console.log('BORRANDO POSTS DE PRUEBA')
+  await cli.deleteExamplePosts();
+
+  console.log()
+  console.log('CONFIGURACIONES GENERALES DE LA WEB')
+  await cli.setGeneralConfigs();
 
   if (process.env.SKIP_CONFIG_REPO !== 'true') {
     console.log()
