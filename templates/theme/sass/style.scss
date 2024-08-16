@@ -33,8 +33,15 @@
 //components
 @import "./partials/components/header";
 @import "./partials/components/footer";
+@import "./partials/components/social-media";
 
 //pages
 @import "./partials/pages/example";
+
+//blog
+@import "./blog/single";
+@import "./blog/sidebar";
+@import "./blog/post-in-list";
+@import "./blog/pagination";
 
 @import "./partials/icons";

@@ -1,0 +1,49 @@
+.social-media-links {
+  $self:&;
+
+  &__menu {
+    list-style: none;
+    padding-left:0;
+  }
+
+  &__link {
+    //color
+    font-size: 25px;
+  }
+
+  &__item-container:not(:last-child) {
+    padding-right: 20px;
+  }
+
+  &--bordered-radius{
+    #{$self}__item-container:not(:last-child) {
+      padding-right: 10px;
+    }
+
+    #{$self}__link{
+      border: 2px solid;
+      border-radius: 50%;
+      font-size: 12px;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      width: 30px;
+      height: 30px;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      -webkit-transition:.3s;
+      -o-transition:.3s;
+      transition:.3s;
+
+      &:hover{
+        //background-color
+        //color
+        transition:.3s;
+      }
+    }
+  }
+}
