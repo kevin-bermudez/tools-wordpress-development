@@ -314,7 +314,7 @@ const main = async () => {
   //install 
   await cli.installPlugin( 'duplicator' );
   await cli.installPlugin( 'form-maker' );
-  await cli.installPlugin( 'yoast' );
+  await cli.installPlugin( 'wordpress-seo' );
   // await installPlugin('duplicator', pathNewProject, cliServiceName, withDocker);
   // await installPlugin('form-maker', pathNewProject, cliServiceName, withDocker);
 

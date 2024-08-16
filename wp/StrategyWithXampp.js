@@ -151,13 +151,13 @@ class StrategyWithXampp extends CliStrategy{
     async configPagesBlog(){
       try { 
         const creatingBlogPage = await executeInConsole(
-          `cd ${this.config.pathNewProject} && wp post create --post_type=page --post_title='Blog' --post_status=publish`
+          `cd ${this.config.pathNewProject} && wp post create --post_type=page --post_title="Blog" --post_status=publish`
         );
         console.log('SALIDA CREANDO PÁGINA DE BLOG');
         console.log(creatingBlogPage);
 
         const blogPageId = await executeInConsole(
-          `cd ${this.config.pathNewProject} && wp post list --title='Blog' --post_type='page' --field=ID`
+          `cd ${this.config.pathNewProject} && wp post list --title="Blog" --post_type=page --field=ID`
         );
 
         const showOnFront = await executeInConsole(
@@ -172,13 +172,13 @@ class StrategyWithXampp extends CliStrategy{
         console.log(settingBlogPage);
 
         const creatingHomePage = await executeInConsole(
-          `cd ${this.config.pathNewProject} && wp post create --post_type=page --post_title='Home' --post_status=publish`
+          `cd ${this.config.pathNewProject} && wp post create --post_type=page --post_title="Home" --post_status=publish`
         );
         console.log('SALIDA CREANDO PÁGINA DE INICIO');
         console.log(creatingHomePage);
 
         const homePageId = await executeInConsole(
-          `cd ${this.config.pathNewProject} && wp post list --title='Home' --post_type='page' --field=ID`
+          `cd ${this.config.pathNewProject} && wp post list --title="Home" --post_type=page --field=ID`
         );
 
         const settingHomePage = await executeInConsole(
@@ -196,7 +196,7 @@ class StrategyWithXampp extends CliStrategy{
     async deleteExamplePosts(){
       try { 
         const samplePageId = await executeInConsole(
-          `cd ${this.config.pathNewProject} && wp post list --title='Sample page' --post_type='page' --field=ID`
+          `cd ${this.config.pathNewProject} && wp post list --title="Sample page" --post_type=page --field=ID`
         );
         console.log('SALIDA OBTENIENDO SAMPLE PAGE');
         console.log(samplePageId);
@@ -207,7 +207,7 @@ class StrategyWithXampp extends CliStrategy{
         console.log('SALIDA BORRANDO SAMPLE PAGE');
         console.log(deletingSamplePage);
 
-        const postId = await executeInConsole(`cd ${this.config.pathNewProject} && wp post list --title='Hello world!' --post_type='post' --field=ID`);
+        const postId = await executeInConsole(`cd ${this.config.pathNewProject} && wp post list --title="Hello world!" --post_type=post --field=ID`);
         console.log('SALIDA OBTENIENDO HELLO WORLD POST');
         console.log(postId);
 
@@ -226,9 +226,9 @@ class StrategyWithXampp extends CliStrategy{
     async setGeneralConfigs(){
       try { 
         const enlacesPermanentes = await executeInConsole(
-          `cd ${this.config.pathNewProject} && wp option update permalink_structure '/%postname%/'`
+          `cd ${this.config.pathNewProject} && wp option update permalink_structure "/%postname%/"`
         );
-        console.log('Enlaces permanentes seteaos',enlacesPermanentes);
+        console.log('Enlaces permanentes seteados',enlacesPermanentes);
       }
       catch(error){
         console.error('Falló seteando enlaces permanentes', error);
