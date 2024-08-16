@@ -39,10 +39,9 @@ if (!function_exists('kd_meta_title')) {
 }
 
 //register position menus for the theme
-// register_nav_menus([
-//   'principal_left' => __('Menú principal izquierda', ''),
-//   'principal_right' => __('Menú principal derecha', '')
-// ]);
+register_nav_menus([
+  'main' => __('Menú principal', '')
+]);
 
 //options pages
 if (function_exists('acf_add_options_page')) {
@@ -340,4 +339,12 @@ if (!function_exists('kd_pagination')) {
 //add suport for feature image in posts
 if ( function_exists( 'add_theme_support' ) ){
   add_theme_support( 'post-thumbnails' );
+}
+
+add_filter( 'nav_menu_link_attributes', 'kd_add_class_to_anchor_menu', 10, 3 );
+
+function kd_add_class_to_anchor_menu( $atts, $item, $args ) {
+    $class = 'nav-item nav-link'; // or something based on $item
+    $atts['class'] = $class;
+    return $atts;
 }
