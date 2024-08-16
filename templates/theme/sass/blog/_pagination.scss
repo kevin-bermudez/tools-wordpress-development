@@ -1,17 +1,17 @@
 .blog-pagination {
-  @include ff-plus-jakarta-normal;
+  //font-family
 
   &__menu-container {
     list-style: none;
 
     li {
       a {
-        color: $blue-dark-h;
+        //color
       }
     }
 
     .active a {
-      color: $green-text;
+      //color
     }
 
     li:not(:last-child) {

@@ -3,12 +3,12 @@
 }
 
 .single-post {
-  @include ff-plus-jakarta-normal;
+  //font-family
 
   &__title {
     margin-top: 20px;
-    color: $blue-dark-h;
-    @include ff-plus-jakarta-bold;
+    //color
+    //font-family
   }
 
   .entry-single {
@@ -24,8 +24,8 @@
 
     p {
       font-style: italic;
-      color: $blue-dark-h;
-      @include ff-plus-jakarta-normal-italic;
+      //color
+      //font-family
     }
   }
 
@@ -39,8 +39,8 @@
 
   &__content {
     * {
-      color: $blue-dark-h;
-      @include ff-plus-jakarta-normal;
+      //color
+      //font-family
     }
   }
 
@@ -49,17 +49,17 @@
   }
 
   &__meta-item {
-    color: $blue-dark-h;
-    @include ff-plus-jakarta-medium;
+    //color
+    //font-family
   }
 
   &__categories-title {
-    @include ff-plus-jakarta-medium;
+    //font-family
   }
 
   &__categories .category-link {
-    color: $blue-dark-h;
-    @include ff-plus-jakarta-normal;
+    //color
+    //font-family
   }
 
   .blog-comments {
@@ -95,12 +95,12 @@
   }
 
   .blog-comments .comment h5 a:hover {
-    color: #e03a3c;
+    color: $black;
   }
 
   .blog-comments .comment h5 .reply {
     padding-left: 10px;
-    color: #111111;
+    color: $black;
   }
 
   .blog-comments .comment h5 .reply i {
@@ -133,21 +133,13 @@
     font-size: 14px;
   }
 
-  .blog-comments .reply-form input {
-    border-radius: 4px;
-    padding: 10px 10px;
-    font-size: 14px;
+  .blog-comments .reply-form input,.blog-comments .reply-form textarea {
+    border:1px solid;
   }
 
   .blog-comments .reply-form input:focus {
     box-shadow: none;
     border-color: #ee9293;
-  }
-
-  .blog-comments .reply-form textarea {
-    border-radius: 4px;
-    padding: 10px 10px;
-    font-size: 14px;
   }
 
   .blog-comments .reply-form textarea:focus {
@@ -164,16 +156,16 @@
     border-radius: 4px;
     padding: 10px 20px;
     border: 0;
-    background-color: $green-text;
+    background-color:$black;
   }
 
   .comment-respond #submit {
-    color: #fff;
+    color: $white;
   }
 
   .blog-comments .reply-form .btn-primary:hover,
   .comment-respond #submit:hover {
-    background-color: $green-text;
+    //background-color
   }
 
   .comment-respond #comment,
@@ -190,7 +182,7 @@
     appearance: none;
     background-color: var(--bs-body-bg);
     background-clip: padding-box;
-    border: 1px solid $light-grey;
+    //border
     border-radius: var(--bs-border-radius);
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   }

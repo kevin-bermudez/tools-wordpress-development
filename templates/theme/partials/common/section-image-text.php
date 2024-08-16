@@ -20,7 +20,14 @@
 <section class="row align-items-center <?php echo $additionalClassContainer ?>" <?php echo $id ? 'id="' . $id . '"' : '' ?>>
     <figure class="col-12 col-lg-6 <?php echo $textRight ? 'order-lg-2' : '' ?>">
         <div class="<?php echo $additionalClassImage ?>-container">
-            <img src="<?php echo $image['url'] ?>" alt="<?php echo $image['alt'] ?>" title="<?php echo $image['title'] ?>" class="wow fadeIn img-fluid <?php echo $additionalClassImage ?>" data-wow-delay="0.1s"/>
+            <?php
+                get_template_part('partials/common/img-responsive','',array_merge(
+                    $image,
+                    [
+                        'class' => 
+                    ]
+                ))
+            ?>
         </div>
     </figure>
     <section class="col-12 col-lg-6 section-image-text__text-container <?php echo $textRight ? 'text-lg-right order-lg-1' : '' ?>">

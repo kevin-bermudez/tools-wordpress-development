@@ -17,6 +17,14 @@
   $title = $banner['title'] ? $banner['title'] : 'Banner genérico {{PROJECT_NAME}}';
 ?>
   <figure class="banner-header">
-    <img src="<?php echo $url; ?>" alt="<?php echo $alt ?>" title="<?php echo $title ?>">
+    <?php
+      get_template_part('partials/common/img-responsive','',
+        [
+            'url' => $url,
+            'alt' =>  $alt,
+            'title' =>  $title
+        ]
+      );
+    ?>
   </figure>
 <?php endif;?>

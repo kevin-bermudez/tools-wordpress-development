@@ -336,3 +336,8 @@ if (!function_exists('kd_pagination')) {
     echo '</ul></div>' . "\n";
   }
 }
+
+//add suport for feature image in posts
+if ( function_exists( 'add_theme_support' ) ){
+  add_theme_support( 'post-thumbnails' );
+}

@@ -18,7 +18,14 @@
 
                 <?php if($image): ?>
                   <div class="entry-img">
-                    <img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" title="<?php echo $image['title'] ?>" class="img-fluid single-post__image" />
+                    <?php
+                        get_template_part('partials/common/img-responsive','',
+                        array_merge(
+                            $image,
+                            ['class' => 'single-post__image'] 
+                        )
+                        );
+                    ?>
                   </div>
                 <?php endif; ?>
 
@@ -83,9 +90,25 @@
             <div class="single-post__blog-author d-flex align-items-center">
             <?php $userId = get_the_author_meta('ID'); $avatar = kd_get_avatar( $userId ) ?>
             <?php if($avatar['url']): ?>
-              <img src="<?php echo $avatar['url']; ?>" class="rounded-circle float-left single-post__avatar" alt="<?php echo $avatar['alt'] ?>" title="<?php echo $avatar['title'] ?>">
+                <?php
+                    get_template_part('partials/common/img-responsive','',
+                        array_merge(
+                            $avatar,
+                            ['class' => 'rounded-circle float-left single-post__avatar'] 
+                        )
+                    );
+                ?>
             <?php else: ?>
-              <img src="<?php echo get_template_directory_uri() ?>/src/images/blog-author.jpg" class="rounded-circle float-left single-post__avatar" alt="<?php echo $avatar['alt'] ?>" title="<?php echo $avatar['title'] ?>">
+                <?php
+                    get_template_part('partials/common/img-responsive','',
+                        [
+                            'url' => get_template_directory_uri() . '/src/images/blog-author.jpg',
+                            'alt' =>  $avatar['alt'],
+                            'title' =>  $avatar['title'],
+                            'class' => 'rounded-circle float-left single-post__avatar'
+                        ]
+                    );
+                ?>
             <?php endif; ?>
               
               <div class="single-post__author-data">

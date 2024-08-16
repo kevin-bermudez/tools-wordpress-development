@@ -8,8 +8,7 @@
   font-display: block;
 }
 
-[class^="icon-"],
-[class*=" icon-"] {
+@mixin ff-icon{
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: "icomoon" !important;
   speak: never;
@@ -24,6 +23,185 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-// .icon-plus-circle:before {
-//   content: "\e900";
-// }
+[class^="icon-"],
+[class*=" icon-"] {
+  @include ff-icon;
+}
+
+@mixin generate-icon($icon){
+  @if $icon == facebook{
+    content: "\e900";
+  }
+
+  @if $icon == instagram{
+    content: "\e901";
+  }
+
+  @if $icon == linkedin{
+    content: "\e902";
+  }
+
+  @if $icon == qq{
+    content: "\e903";
+  }
+
+  @if $icon == skype{
+    content: "\e904";
+  }
+
+  @if $icon == snapchat{
+    content: "\e905";
+  }
+
+  @if $icon == telegram{
+    content: "\e906";
+  }
+
+  @if $icon == tiktok{
+    content: "\e907";
+  }
+
+  @if $icon == twitter{
+    content: "\e908";
+  }
+
+  @if $icon == whatsapp{
+    content: "\e909";
+  }
+
+  @if $icon == youtube{
+    content: "\e90a";
+  }
+
+  @if $icon == search{
+    content: "\e90b";
+  }
+
+  @if $icon == menu-mobile{
+    content: "\e90c";
+  }
+
+  @if $icon == plus{
+    content: "\e90d";
+  }
+
+  @if $icon == home{
+    content: "\e90e";
+  }
+
+  @if $icon == comment{
+    content: "\e90f";
+  }
+
+  @if $icon == clock{
+    content: "\e910";
+  }
+
+  @if $icon == arrow-left{
+    content: "\e911";
+  }
+
+  @if $icon == arrow-right{
+    content: "\e912";
+  }
+
+  @if $icon == world{
+    content: "\e913";
+  }
+
+  @if $icon == email{
+    content: "\e914";
+  }
+
+  @if $icon == phone-call{
+    content: "\e915";
+  }
+
+  @if $icon == location-pin{
+    content: "\e916";
+  }
+
+  @if $icon == left-large{
+    content: "\e917";
+  }
+
+  @if $icon == right-large{
+    content: "\e918";
+  }
+}
+
+.icon-facebook:before {
+  @include generate-icon(facebook);
+}
+.icon-instagram:before {
+  @include generate-icon(instagram);
+}
+.icon-linkedin:before {
+  @include generate-icon(linkedin);
+}
+.icon-qq:before {
+  @include generate-icon(qq);
+}
+.icon-skype:before {
+  @include generate-icon(skype);
+}
+.icon-snapchat:before {
+  @include generate-icon(snapchat);
+}
+.icon-telegram:before {
+  @include generate-icon(telegram);
+}
+.icon-tiktok:before {
+  @include generate-icon(tiktok);
+}
+.icon-twitter:before {
+  @include generate-icon(twitter);
+}
+.icon-whatsapp:before {
+  @include generate-icon(whatsapp);
+}
+.icon-youtube:before {
+  @include generate-icon(youtube);
+}
+.icon-search:before {
+  @include generate-icon(search);
+}
+.icon-menu-mobile:before {
+  @include generate-icon(menu-mobile);
+}
+.icon-plus:before {
+  @include generate-icon(plus);
+}
+.icon-home:before {
+  @include generate-icon(home);
+}
+.icon-comment:before {
+  @include generate-icon(comment);
+}
+.icon-clock:before {
+  @include generate-icon(clock);
+}
+.icon-arrow-left:before {
+  @include generate-icon(arrow-left);
+}
+.icon-arrow-right:before {
+  @include generate-icon(arrow-right);
+}
+.icon-world:before {
+  @include generate-icon(world);
+}
+.icon-email:before {
+  @include generate-icon(email);
+}
+.icon-phone-call:before {
+  @include generate-icon(phone-call);
+}
+.icon-location-pin:before {
+  @include generate-icon(location-pin);
+}
+.icon-left-large:before {
+  @include generate-icon(left-large);
+}
+.icon-right-large:before {
+  @include generate-icon(right-large);
+}
