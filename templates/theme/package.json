@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "sass:watch": "node-sass sass/ -watch --output-style compressed -x -o ./css"
+    "sass:watch": "node-sass sass/ partials/ -watch --output-style compressed -x -o ./css"
   },
   "repository": {
     "type": "git",
