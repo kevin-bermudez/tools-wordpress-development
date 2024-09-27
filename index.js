@@ -150,8 +150,8 @@ const main = async () => {
   console.log('Información para el nuevo proyecto');
 
   console.log()
-  const projectName = await doQuestion('Nombre del proyecto:', true,'prueba');
-  const withDocker = (await doQuestion('Con Docker? (s/n):',true,'s')).toLowerCase() === 's';
+  const projectName = await doQuestion('Nombre del proyecto:', true,'prueba-catalogo-pdf');
+  const withDocker = (await doQuestion('Con Docker? (s/n):',true,'n')).toLowerCase() === 's';
   
   const projecNamePascalCase = toPascalCase(projectName);
   const folderName = toHyppenCase(projectName);
@@ -177,8 +177,8 @@ const main = async () => {
 
   let webPort,dbPort;
   if(withDocker){
-    webPort = await doQuestion('Puerto web:', true,8209);
-    dbPort = await doQuestion('Puerto db:', true,8210);
+    webPort = await doQuestion('Puerto web:', true,80);
+    dbPort = await doQuestion('Puerto db:', true,3306);
   }
   
   const currentTime = new Date().getTime();

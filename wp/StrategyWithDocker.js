@@ -1,4 +1,5 @@
 const { executeInConsole } = require("../utils/execute-in-console");
+const { delay } = require("../utils/wait");
 const { wpIsInstalled } = require("../utils/wp-is-installed");
 const { CliStrategy } = require("./CliStrategy");
 
@@ -144,6 +145,94 @@ class StrategyWithDocker extends CliStrategy{
             console.error('Falló eliminando temas inactivos', error);
             throw new Error('Falló eliminando temas inactivos');
           }
+    }
+
+    async configPagesBlog(){
+      try { 
+        const creatingBlogPage = await executeInConsole(
+          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp post create --post_type=page --post_title="Blog" --post_status=publish`
+        );
+        console.log('SALIDA CREANDO PÁGINA DE BLOG');
+        console.log(creatingBlogPage);
+
+        const blogPageId = await executeInConsole(
+          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp post list --title="Blog" --post_type=page --field=ID`
+        );
+
+        const showOnFront = await executeInConsole(
+          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp option update show_on_front page`
+        );
+        console.log('Página de blog seteada como página estátita',showOnFront);
+
+        const settingBlogPage = await executeInConsole(
+          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp option update page_for_posts ${blogPageId}`
+        ); 
+        console.log('SALIDA SETEANDO PÁGINA DE BLOG');
+        console.log(settingBlogPage);
+
+        const creatingHomePage = await executeInConsole(
+          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp post create --post_type=page --post_title="Home" --post_status=publish`
+        );
+        console.log('SALIDA CREANDO PÁGINA DE INICIO');
+        console.log(creatingHomePage);
+
+        const homePageId = await executeInConsole(
+          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp post list --title="Home" --post_type=page --field=ID`
+        );
+
+        const settingHomePage = await executeInConsole(
+          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp option update page_on_front ${homePageId}`
+        ); 
+        console.log('SALIDA SETEANDO PÁGINA DE INICIO');
+        console.log(settingHomePage);
+      }
+      catch (error) {
+        console.error('Falló seteando página de inicio y de blog', error);
+        throw new Error('Falló seteando página de inicio y de blog');
+      }
+    }
+
+    async deleteExamplePosts(){
+      try { 
+        const samplePageId = await executeInConsole(
+          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp post list --title="Sample page" --post_type=page --field=ID`
+        );
+        console.log('SALIDA OBTENIENDO SAMPLE PAGE');
+        console.log(samplePageId);
+
+        const deletingSamplePage = await executeInConsole(
+          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp post delete ${samplePageId}`
+        );
+        console.log('SALIDA BORRANDO SAMPLE PAGE');
+        console.log(deletingSamplePage);
+
+        const postId = await executeInConsole(`cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp post list --title="Hello world!" --post_type=post --field=ID`);
+        console.log('SALIDA OBTENIENDO HELLO WORLD POST');
+        console.log(postId);
+
+        const deletingSamplePost = await executeInConsole(
+          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp post delete ${postId}`
+        );
+        console.log('SALIDA BORRANDO SAMPLE PAGE');
+        console.log(deletingSamplePost);
+      }
+      catch(error){
+        console.error('Falló borrando posts de prueba', error);
+        throw new Error('Falló borrando posts de prueba');
+      }
+    }
+
+    async setGeneralConfigs(){
+      try { 
+        const enlacesPermanentes = await executeInConsole(
+          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp option update permalink_structure "/%postname%/"`
+        );
+        console.log('Enlaces permanentes seteados',enlacesPermanentes);
+      }
+      catch(error){
+        console.error('Falló seteando enlaces permanentes', error);
+        throw new Error('Falló seteando enlaces permanentes');
+      }
     }
 }
 

@@ -10,7 +10,8 @@ class StrategyWithXampp extends CliStrategy{
 
     async installWordpress(){
         console.log('Creando base de datos')
-        const creatingDb = await executeInConsole(`cd ${this.config.dbBin} && mysql.exe -u root -e "CREATE DATABASE ${this.config.dbName}"`)
+        const command = process.env.IN_MAC ? `${this.config.dbBin} -u root -e "CREATE DATABASE ${this.config.dbName}"` : `cd ${this.config.dbBin} && mysql.exe -u root -e "CREATE DATABASE ${this.config.dbName}"`; 
+        const creatingDb = await executeInConsole(command);
         console.log('Base de datos creada resultado:', creatingDb);
 
         console.log('Descargando Wordpress...')
@@ -21,13 +22,13 @@ class StrategyWithXampp extends CliStrategy{
 
         console.log('Creando wp-config');
         const creatingWpConfig = await executeInConsole(
-          `cd ${this.config.pathNewProject} && wp config create --dbname="${this.config.dbName}" --dbuser="root" --dbpass=""`
+          `cd ${this.config.pathNewProject} && wp config create --dbhost=localhost:3306 --dbname="${this.config.dbName}" --dbuser="root" --dbpass=""`
         );
-        console.log('Descarga de wordpress is', creatingWpConfig);
+        console.log('wp-config creado', creatingWpConfig);
 
         console.log('Instalando Wordpress');
         const installWordpress = await executeInConsole(
-            `cd ${this.config.pathNewProject} &&  wp core install --url=http://localhost/${this.config.folderName} --title="${this.config.webTitle}" --admin_user=dev --admin_email=kevinbermudezmejia@gmail.com --admin_password="${this.config.adminPassword}`
+            `cd ${this.config.pathNewProject} &&  wp core install --url=http://localhost/${this.config.folderName} --title="${this.config.webTitle}" --admin_user=dev --admin_email=kevinbermudezmejia@gmail.com --admin_password="${this.config.adminPassword}"`
         );
         console.log('Instalación de wordpress is', installWordpress);
 
