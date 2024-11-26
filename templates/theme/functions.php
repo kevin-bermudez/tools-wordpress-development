@@ -212,12 +212,18 @@ if(!function_exists('kd_get_feature_image')){
 
 if(!function_exists('kd_get_id_youtube_video')){
   function kd_get_id_youtube_video($url) {
-    $patron = '%^ (?:https?://)? (?:www\.)? (?: youtu\.be/ | youtube\.com (?: /shorts/ | /embed/ | /v/ | /watch\?v= ) ) ([\w-]{10,12}) $%x';
-    $array = preg_match($patron, $url, $parte);
-    if (false !== $array) {
-        return $parte[1];
+    if(!function_exists('kd_get_id_youtube_video')){
+      function kd_get_id_youtube_video($url) {
+        $pattern = '/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/';
+    
+        // Comprobar si hay coincidencia
+        if (preg_match($pattern, $url, $matches)) {
+            return $matches[1]; // Devuelve el ID del video
+        }
+    
+        return false; // Retorna false si no se encuentra el ID
+      }
     }
-    return false;
   }
 }
 
