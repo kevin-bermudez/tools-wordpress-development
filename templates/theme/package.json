@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "./scripts/dev.sh",
     "sass:watch": "node-sass sass/ partials/ -watch --output-style compressed -x -o ./css"
   },
   "repository": {
