@@ -44,15 +44,18 @@ register_nav_menus([
 ]);
 
 //options pages
-if (function_exists('acf_add_options_page')) {
-  acf_add_options_page([
-    'page_title' => 'Configuración {{PROJECT_NAME}}',
+// Opciones de ACF dentro del hook correcto
+add_action('acf/init', function () {
+  if (function_exists('acf_add_options_page')) {
+    acf_add_options_page([
+      'page_title' => 'Configuración {{PROJECT_NAME}}',
     'menu_title' => 'Configuración {{PROJECT_NAME}}',
-    'menu_slug' => 'theme-general-settings',
-    'capability' => 'edit_posts',
-    'redirect' => false,
-  ]);
-}
+      'menu_slug' => 'theme-general-settings',
+      'capability' => 'edit_posts',
+      'redirect' => false,
+    ]);
+  }
+});
 
 //current item menu add class
 if (!function_exists('special_nav_class')) {

@@ -2,3 +2,4 @@ node_modules/
 data/
 prueba/
 .env
+used-ports.json
