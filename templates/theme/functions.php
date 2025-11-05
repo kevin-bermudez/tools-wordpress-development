@@ -361,3 +361,21 @@ function kd_add_class_to_anchor_menu( $atts, $item, $args ) {
 function kd_generate_field_key(){
   return 'field_' . uniqid();
 }
+
+function kd_create_acf($fieldsInt,$parent = null){
+	$parent = !$parent ? $_GET['parent'] : $parent;
+
+	foreach($fieldsInt as $field){
+		$defField = array_merge($field,[
+			'parent' => $parent
+		]);
+
+		$newField = acf_update_field( $defField );
+		
+		if(isset($field['sub_fields'])){
+			kd_create_acf( $field['sub_fields'],$newField['ID'] );
+		}
+	}
+
+	echo "Éxito<br>";
+}
