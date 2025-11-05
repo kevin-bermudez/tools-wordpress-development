@@ -357,3 +357,7 @@ function kd_add_class_to_anchor_menu( $atts, $item, $args ) {
     $atts['class'] = $class;
     return $atts;
 }
+
+function kd_generate_field_key(){
+  return 'field_' . uniqid();
+}
