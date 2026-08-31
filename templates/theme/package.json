@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "sass:watch": "node-sass sass/ partials/**/* page-templates/**/* -watch --output-style compressed -x -o ./css",
+    "sass:watch": "sass --watch sass:css --style=compressed",
     "dev": "./scripts/dev.sh"
   },
   "repository": {
@@ -14,6 +14,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "node-sass": "^8.0.0"
+    "sass": "^1.103.1"
   }
 }

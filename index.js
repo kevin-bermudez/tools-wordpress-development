@@ -95,24 +95,32 @@ const copyPreinstalledPlugins = (projectPath) => {
 }
 
 const setInitialConfigRepo = async (pathNewProject) => {
-  try { 
-    let ouput = await executeInConsole(`cd ${pathNewProject} && git init`);
-    console.log('SALIDA PARA GIT INIT')
-    console.log(ouput)
+  try {
+    let ouput = await executeInConsole(
+      `cd ${pathNewProject} && git init -b master`
+    );
 
-    ouput = await executeInConsole(`cd ${pathNewProject} && git config user.email "kevinbermudezmejia@gmail.com"`);
-    console.log('SALIDA PARA GIT CONFIG EMAIL')
-    console.log(ouput)
+    console.log('SALIDA PARA GIT INIT');
+    console.log(ouput);
 
-    ouput = await executeInConsole(`cd ${pathNewProject} && git config user.name "kevin-bermudez"`);
-    console.log('SALIDA PARA GIT CONFIG NAME')
-    console.log(ouput)
-  }
-  catch (error) {
+    ouput = await executeInConsole(
+      `cd ${pathNewProject} && git config user.email "kevinbermudezmejia@gmail.com"`
+    );
+
+    console.log('SALIDA PARA GIT CONFIG EMAIL');
+    console.log(ouput);
+
+    ouput = await executeInConsole(
+      `cd ${pathNewProject} && git config user.name "kevin-bermudez"`
+    );
+
+    console.log('SALIDA PARA GIT CONFIG NAME');
+    console.log(ouput);
+  } catch (error) {
     console.error('Falló git init, git config', error);
     throw new Error('Falló git init, git config');
   }
-}
+};
 
 const npmI = async(pathNewProject) => {
   try{
