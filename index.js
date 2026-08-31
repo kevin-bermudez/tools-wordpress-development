@@ -323,7 +323,7 @@ const main = async () => {
 
   console.log()
   console.log('ACTIVANDO PLUGINS')
-  await cli.activatePlugin( 'duplicator advanced-custom-fields-pro form-maker secure-custom-fields' );
+  await cli.activatePlugin( 'duplicator form-maker secure-custom-fields' );
   // await activatePlugin('duplicator advanced-custom-fields-pro form-maker', pathNewProject, cliServiceName, withDocker);
 
   console.log()
