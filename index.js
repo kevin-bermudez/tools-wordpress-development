@@ -321,7 +321,7 @@ const main = async () => {
   console.log('INSTALANDO PLUGINS')
   //install 
   await cli.installPlugin( 'duplicator' );
-  await cli.installPlugin( 'form-maker' );
+  // await cli.installPlugin( 'form-maker' );
   await cli.installPlugin( 'wordpress-seo' );
   await cli.installPlugin( 'secure-custom-fields' );
   // await installPlugin('duplicator', pathNewProject, cliServiceName, withDocker);
@@ -331,7 +331,7 @@ const main = async () => {
 
   console.log()
   console.log('ACTIVANDO PLUGINS')
-  await cli.activatePlugin( 'duplicator form-maker secure-custom-fields' );
+  await cli.activatePlugin( 'duplicator secure-custom-fields' );
   // await activatePlugin('duplicator advanced-custom-fields-pro form-maker', pathNewProject, cliServiceName, withDocker);
 
   console.log()
