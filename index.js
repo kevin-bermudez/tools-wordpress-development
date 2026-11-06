@@ -165,7 +165,7 @@ const main = async () => {
   const folderName = toHyppenCase(projectName);
   const projectSnakeCase = toSnakeCase(projectName);
   const pathNewProjectRoot = `${defaultProjectsPath}/${folderName}`
-  const pathNewProject = withDocker ? `${pathNewProjectRoot}/code` : `${pathNewProjectRoot}/wp-content/themes/${folderName}`;
+  const pathNewProject = withDocker ? `${pathNewProjectRoot}/theme-${projectName}` : `${pathNewProjectRoot}/wp-content/themes/${folderName}`;
   
 
   if(withDocker){
@@ -258,8 +258,10 @@ const main = async () => {
     pathNewProject,
     cliServiceName,
     folderName,
-    webPort 
-  }) : new StrategyWithXampp({ 
+    webPort,
+    webTitle,
+    adminPassword
+  }) : new StrategyWithXampp({
     pathNewProject: pathNewProjectRoot,
     folderName,
     webPort,

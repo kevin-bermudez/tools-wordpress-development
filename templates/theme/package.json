@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "sass:watch": "sass --watch sass:css --style=compressed",
+    "sass:watch": "sass --watch sass:css --style=compressed --load-path=page-templates --load-path=components --load-path=sass/libs --quiet-deps",
     "dev": "./scripts/dev.sh"
   },
   "repository": {

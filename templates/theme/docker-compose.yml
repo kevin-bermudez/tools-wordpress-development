@@ -1,3 +1,5 @@
+name: {{PROJECT_NAME}}
+
 services:
   {{DB_SERVICE_NAME}}:
     container_name: {{DB_CONTAINER_NAME}}
@@ -41,7 +43,7 @@ services:
   {{CLI_SERVICE_NAME}}:
     container_name: {{CLI_CONTAINER_NAME}}
     image: wordpress:cli
-    command: wp core install --url=http://localhost:{{WEB_PORT}} --title="{{WEB_TITLE}}" --admin_user=dev --admin_email=kevinbermudezmejia@gmail.com --admin_password="{{ADMIN_PASSWORD}}"
+    profiles: ['setup']
     depends_on:
       {{WEB_SERVICE_NAME}}:
         condition: service_healthy

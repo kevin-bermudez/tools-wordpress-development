@@ -4,9 +4,9 @@ const { wpIsInstalled } = require("../utils/wp-is-installed");
 const { CliStrategy } = require("./CliStrategy");
 
 class StrategyWithDocker extends CliStrategy{
-    constructor({ pathNewProject,cliServiceName,folderName,webPort }){
+    constructor({ pathNewProject, cliServiceName, folderName, webPort, webTitle, adminPassword }){
         super()
-        this.config = { pathNewProject,cliServiceName,folderName,webPort };
+        this.config = { pathNewProject, cliServiceName, folderName, webPort, webTitle, adminPassword };
     }
 
     async installWordpress(){
@@ -15,6 +15,12 @@ class StrategyWithDocker extends CliStrategy{
             `cd ${this.config.pathNewProject} && docker-compose up --build -d`
         );
         console.log('run docker is', runDocker);
+
+        console.log('Instalando WordPress mediante WP-CLI...');
+        const installCommand = await executeInConsole(
+            `cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp core install --url=http://localhost:${this.config.webPort} --title="${this.config.webTitle}" --admin_user=dev --admin_email=kevinbermudezmejia@gmail.com --admin_password="${this.config.adminPassword}"`
+        );
+        console.log('Resultado instalación:', installCommand);
 
         let control = true;
         console.log('Comprobando instalación de wordpress...');
@@ -36,10 +42,10 @@ class StrategyWithDocker extends CliStrategy{
     async changeLanguage( newLanguage ){
         try {
             const installingTheme = await executeInConsole(
-              `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp language core install ${newLanguage}`
+              `cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp language core install ${newLanguage}`
             )
             const activatingTheme = await executeInConsole(
-              `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp site switch-language ${newLanguage}`
+              `cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp site switch-language ${newLanguage}`
             );
         
             console.log();
@@ -58,7 +64,7 @@ class StrategyWithDocker extends CliStrategy{
     async activateTheme(){
         try { 
             const activatingTheme = await executeInConsole(
-                `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp theme activate ${this.config.folderName}`
+                `cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp theme activate ${this.config.folderName}`
             );
             console.log('SALIDA ACTIVANDO EL TEMA', this.config.folderName);
             console.log(activatingTheme);
@@ -72,7 +78,7 @@ class StrategyWithDocker extends CliStrategy{
     async installPlugin( pluginName ){
         try { 
             const installingPlugin = await executeInConsole(
-              `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp plugin install ${pluginName}`
+              `cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp plugin install ${pluginName}`
             );
             console.log('SALIDA INSTALANDO EL PLUGIN', pluginName);
             console.log(installingPlugin);
@@ -86,7 +92,7 @@ class StrategyWithDocker extends CliStrategy{
     async activatePlugin( pluginsName ){
         try { 
             const installingPlugin = await executeInConsole(
-              `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp plugin activate ${pluginsName}`
+              `cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp plugin activate ${pluginsName}`
             );
             console.log('SALIDA ACTIVANDO EL PLUGIN', pluginsName);
             console.log(installingPlugin);
@@ -100,7 +106,7 @@ class StrategyWithDocker extends CliStrategy{
     async deactivatePlugin( pluginsName ){
         try { 
             const installingPlugin = await executeInConsole(
-              `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp plugin deactivate ${pluginsName}`
+              `cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp plugin deactivate ${pluginsName}`
             );
             console.log('SALIDA DESACTIVANDO EL PLUGIN', pluginsName);
             console.log(installingPlugin);
@@ -114,7 +120,7 @@ class StrategyWithDocker extends CliStrategy{
     async uninstallPlugin( pluginsName ){
         try { 
             const installingPlugin = await executeInConsole(
-              `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp plugin uninstall ${pluginsName}`
+              `cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp plugin uninstall ${pluginsName}`
             );
             console.log('SALIDA DESINSTALANDO EL PLUGIN', pluginsName);
             console.log(installingPlugin);
@@ -127,16 +133,17 @@ class StrategyWithDocker extends CliStrategy{
 
     async deleteInaciveThemes(){
         try { 
-            const inaciveThemesList = await executeInConsole(`cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp theme list --status=inactive --field=name`);
+            const inaciveThemesList = await executeInConsole(`cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp theme list --status=inactive --field=name`);
             const themes = inaciveThemesList.trim().split('\n');
             let result = '';
         
             for (let theme of themes) {
-              result += await executeInConsole(
-                `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp theme delete ${theme}`
-              );
+              if(theme.trim()){
+                  result += await executeInConsole(
+                    `cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp theme delete ${theme.trim()}`
+                  );
+              }
             }
-            
             
             console.log('SALIDA ELIMINANDO TEMAS INACTIVOS', result);
             console.log(result);
@@ -150,38 +157,38 @@ class StrategyWithDocker extends CliStrategy{
     async configPagesBlog(){
       try { 
         const creatingBlogPage = await executeInConsole(
-          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp post create --post_type=page --post_title="Blog" --post_status=publish`
+          `cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp post create --post_type=page --post_title="Blog" --post_status=publish`
         );
         console.log('SALIDA CREANDO PÁGINA DE BLOG');
         console.log(creatingBlogPage);
 
         const blogPageId = await executeInConsole(
-          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp post list --title="Blog" --post_type=page --field=ID`
+          `cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp post list --title="Blog" --post_type=page --field=ID`
         );
 
         const showOnFront = await executeInConsole(
-          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp option update show_on_front page`
+          `cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp option update show_on_front page`
         );
         console.log('Página de blog seteada como página estátita',showOnFront);
 
         const settingBlogPage = await executeInConsole(
-          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp option update page_for_posts ${blogPageId}`
+          `cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp option update page_for_posts ${blogPageId.trim()}`
         ); 
         console.log('SALIDA SETEANDO PÁGINA DE BLOG');
         console.log(settingBlogPage);
 
         const creatingHomePage = await executeInConsole(
-          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp post create --post_type=page --post_title="Home" --post_status=publish`
+          `cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp post create --post_type=page --post_title="Home" --post_status=publish`
         );
         console.log('SALIDA CREANDO PÁGINA DE INICIO');
         console.log(creatingHomePage);
 
         const homePageId = await executeInConsole(
-          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp post list --title="Home" --post_type=page --field=ID`
+          `cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp post list --title="Home" --post_type=page --field=ID`
         );
 
         const settingHomePage = await executeInConsole(
-          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp option update page_on_front ${homePageId}`
+          `cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp option update page_on_front ${homePageId.trim()}`
         ); 
         console.log('SALIDA SETEANDO PÁGINA DE INICIO');
         console.log(settingHomePage);
@@ -195,26 +202,30 @@ class StrategyWithDocker extends CliStrategy{
     async deleteExamplePosts(){
       try { 
         const samplePageId = await executeInConsole(
-          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp post list --title="Sample page" --post_type=page --field=ID`
+          `cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp post list --title="Sample page" --post_type=page --field=ID`
         );
         console.log('SALIDA OBTENIENDO SAMPLE PAGE');
         console.log(samplePageId);
 
-        const deletingSamplePage = await executeInConsole(
-          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp post delete ${samplePageId}`
-        );
-        console.log('SALIDA BORRANDO SAMPLE PAGE');
-        console.log(deletingSamplePage);
+        if(samplePageId.trim()) {
+            const deletingSamplePage = await executeInConsole(
+              `cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp post delete ${samplePageId.trim()}`
+            );
+            console.log('SALIDA BORRANDO SAMPLE PAGE');
+            console.log(deletingSamplePage);
+        }
 
-        const postId = await executeInConsole(`cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp post list --title="Hello world!" --post_type=post --field=ID`);
+        const postId = await executeInConsole(`cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp post list --title="Hello world!" --post_type=post --field=ID`);
         console.log('SALIDA OBTENIENDO HELLO WORLD POST');
         console.log(postId);
 
-        const deletingSamplePost = await executeInConsole(
-          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp post delete ${postId}`
-        );
-        console.log('SALIDA BORRANDO SAMPLE PAGE');
-        console.log(deletingSamplePost);
+        if(postId.trim()) {
+            const deletingSamplePost = await executeInConsole(
+              `cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp post delete ${postId.trim()}`
+            );
+            console.log('SALIDA BORRANDO SAMPLE POST');
+            console.log(deletingSamplePost);
+        }
       }
       catch(error){
         console.error('Falló borrando posts de prueba', error);
@@ -225,7 +236,7 @@ class StrategyWithDocker extends CliStrategy{
     async setGeneralConfigs(){
       try { 
         const enlacesPermanentes = await executeInConsole(
-          `cd ${this.config.pathNewProject} && docker-compose run ${this.config.cliServiceName} wp option update permalink_structure "/%postname%/"`
+          `cd ${this.config.pathNewProject} && docker-compose run --rm ${this.config.cliServiceName} wp option update permalink_structure "/%postname%/"`
         );
         console.log('Enlaces permanentes seteados',enlacesPermanentes);
       }
